@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "RogueCharacter.generated.h"
 
+struct FInputActionValue;
+class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 
@@ -20,6 +22,12 @@ public:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, Category=" Input")
+	TObjectPtr<UInputAction> Input_Move;
+
+	UPROPERTY(EditDefaultsOnly, Category=" Input")
+	TObjectPtr<UInputAction> Input_look;
+
 	UPROPERTY(VisibleAnywhere, Category=" Components")
 	TObjectPtr<UCameraComponent> CameraComponent;
 
@@ -33,6 +41,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void Move(const FInputActionValue& InputActionValue);
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };
