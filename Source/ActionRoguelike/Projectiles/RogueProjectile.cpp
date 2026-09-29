@@ -4,7 +4,8 @@
 #include "RogueProjectile.h"
 #include "NiagaraComponent.h"
 #include "Components/SphereComponent.h"
-
+#include "Kismet/GameplayStatics.h"
+#include  "NiagaraFunctionLibrary.h"
 
 // Sets default values
 ARogueProjectile::ARogueProjectile()
@@ -16,4 +17,22 @@ ARogueProjectile::ARogueProjectile()
 	
 	LoopedNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LoopedNiagaraComp"));
 	LoopedNiagaraComponent->SetupAttachment(SphereComponent);
+}
+
+void ARogueProjectile::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	SphereComponent->OnComponentHit.AddDynamic(this, &ARogueProjectile::OnActorHit);
+}
+
+void ARogueProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse, const FHitResult& Hit)
+{
+	// @todo :Create our own damage type
+	TSubclassOf<UDamageType> DmgTypeClass = UDamageType::StaticClass();
+	UGameplayStatics::ApplyDamage(OtherActor, 10.f, GetInstigatorController(), this, DmgTypeClass);
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ExplosionEffect, GetActorLocation());
+	
+	Destroy();
 }

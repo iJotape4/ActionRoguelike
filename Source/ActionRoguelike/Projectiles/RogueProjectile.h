@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h" 
+#include "NiagaraSystem.h"
 #include "GameFramework/Actor.h"
 #include "RogueProjectile.generated.h"
 
@@ -14,10 +15,6 @@ class ACTIONROGUELIKE_API ARogueProjectile : public AActor
 {
 	GENERATED_BODY()
 
-public:
-	// Sets default values for this actor's properties
-	ARogueProjectile();
-
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Components")
@@ -25,5 +22,16 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category= "Components")
 	TObjectPtr<UNiagaraComponent> LoopedNiagaraComponent;
+	 
+	UPROPERTY(EditDefaultsOnly, Category= "Effects")
+	TObjectPtr<UNiagaraSystem> ExplosionEffect;
+
+	UFUNCTION()
+	void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+public:
+	// Sets default values for this actor's properties
+	ARogueProjectile();
+	virtual void PostInitializeComponents() override;
+
 };
  
